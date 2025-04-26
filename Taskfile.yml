@@ -1,0 +1,44 @@
+version: '3'
+
+includes:
+  common: ./build/Taskfile.yml
+  windows: ./build/windows/Taskfile.yml
+  darwin: ./build/darwin/Taskfile.yml
+  linux: ./build/linux/Taskfile.yml
+
+vars:
+  APP_NAME: "demo"
+  BIN_DIR: "bin"
+
+tasks:
+  build:
+    summary: Builds the application
+    cmds:
+      - task: "{{OS}}:build"
+
+  package:
+    summary: Packages a production build of the application
+    cmds:
+      - task: "{{OS}}:package"
+
+  run:
+    summary: Runs the application
+    cmds:
+      - task: "{{OS}}:run"
+
+  generate:templ:
+    summary: Generates templ files
+    sources:
+      - "internal/views/*.templ"
+    generates:
+      - "internal/views/*_templ.go"
+    cmds:
+      - templ generate
+
+  dev:
+    summary: Runs the application in development mode
+    deps:
+      - generate:templ
+    cmds:
+      - wails3 dev -config ./build/config.yml
+
