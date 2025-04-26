@@ -1,1 +1,3 @@
 Integrates wails3 and datastar. My [my wails2 demo](https://github.com/justinmoon/wails2-datastar) devines a custom plugin and IPC-based SDK code to do everything. This one runs a gin server which is piped directly through wails mechanics [as suggested by docs](https://v3alpha.wails.io/guides/gin-services/). So there is much less custom stuff going on here which I think should be better in general.
+
+The only issue I encoutered was fixed by [this PR to Wails](https://github.com/wailsapp/wails/pull/42450). When this gets merged and released we can drop [this line](https://github.com/justinmoon/wails3-datastar/blob/650a5164e1899dc3a153a7d73bfc03aabc6cfc35/go.mod#L82) from go.mod this uses my fork of wails.
