@@ -3,11 +3,10 @@ package main
 import (
 	"embed"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/wailsapp/wails/v3/pkg/application"
 	"demo/internal/server"
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 //go:embed all:frontend
@@ -18,9 +17,6 @@ func main() {
 	server.SetEmbedFS(embedFS)
 
 	ginEngine := server.NewRouter()
-
-	// middleware that always wraps responses with flushWriter
-	// This ensures all responses can be flushed (for SSE and templ)
 
 	// Important: Setting empty dev server URL to disable dev server check
 	os.Setenv("FRONTEND_DEVSERVER_URL", "")
@@ -56,29 +52,4 @@ func main() {
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
 	}
-}
-
-// flushWriter is a wrapper that implements http.Flusher
-type flushWriter struct {
-	w http.ResponseWriter
-}
-
-func (fw *flushWriter) Header() http.Header {
-	return fw.w.Header()
-}
-
-func (fw *flushWriter) Write(data []byte) (int, error) {
-	return fw.w.Write(data)
-}
-
-func (fw *flushWriter) WriteHeader(statusCode int) {
-	fw.w.WriteHeader(statusCode)
-}
-
-// Flush implements http.Flusher
-func (fw *flushWriter) Flush() {
-	if f, ok := fw.w.(http.Flusher); ok {
-		f.Flush()
-	}
-	// If not a Flusher, we simply ignore the Flush request
 }
